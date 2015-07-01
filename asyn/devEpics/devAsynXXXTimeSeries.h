@@ -136,9 +136,9 @@ static long process(dbCommon *pr) \
       case 0: \
         break; \
       case 1: \
-        pPvt->nord = 0; \
+        pPvt->nord = 0; /* number of elements read set to 0 */ \
         busy = 1; \
-        memset(pwf->bptr, 0, pwf->nelm*sizeof(EPICS_TYPE)); \
+        memset(pwf->bptr, 0, pwf->nelm*sizeof(EPICS_TYPE)); /* sets array to all zeroes */ \
         break; \
       case 2: \
         busy = 0; \
@@ -147,11 +147,11 @@ static long process(dbCommon *pr) \
         busy = 1; \
         break; \
     } \
-    if (pwf->nord != pPvt->nord) { \
+    if (pwf->nord != pPvt->nord) { /* keep nord up to date */\
       pwf->nord = pPvt->nord; \
-      db_post_events(pwf, &pwf->nord, DBE_VALUE | DBE_LOG); \
+      db_post_events(pwf, &pwf->nord, DBE_VALUE | DBE_LOG); /* post change of state to channel access server */ \
     } \
-    if (pwf->busy != busy) { \
+    if (pwf->busy != busy) { /* keep waveform record busy up to date with private field busy */ \
       pwf->busy = busy; \
       db_post_events(pwf, &pwf->busy, DBE_VALUE | DBE_LOG); \
       /* BUSY has changed state so either register or cancel callbacks */ \
@@ -175,7 +175,7 @@ static long process(dbCommon *pr) \
         } \
       } \
     } \
-    pPvt->busy = pwf->busy; \
+    pPvt->busy = pwf->busy; /* set private field busy to waveform record busy */ \
     pwf->rarm = 0; \
     pwf->udf = 0; \
     if (pPvt->status != asynSuccess) { \
